@@ -21,9 +21,8 @@
 8. [Dashboard — Streamlit](#️-dashboard--streamlit)
 9. [Análise Exploratória — Pandas e Matplotlib](#-análise-exploratória--pandas-e-matplotlib)
 10. [Como Executar](#️-como-executar)
-11. [Testes Unitários](#-testes-unitários)
-12. [Evidências](#-evidências)
-13. [Conclusão](#-conclusão)
+11. [Evidências](#-evidências)
+12. [Conclusão](#-conclusão)
 
 ---
 
@@ -110,12 +109,12 @@ Os dados foram inseridos manualmente para simular um cenário real de negócio, 
 
 ### Perfis de clientes
 
-| Perfil         | Descrição                                                    |
-| -------------- | ------------------------------------------------------------ |
+| Perfil | Descrição |
+|---|---|
 | **Recorrente** | Alto volume de compras, pedidos distribuídos em vários meses |
-| **Ocasional**  | Poucos pedidos, intervalos longos entre compras              |
-| **Inativo**    | Último pedido há mais de 6 meses                             |
-| **Novo**       | Cadastro recente, poucos pedidos                             |
+| **Ocasional** | Poucos pedidos, intervalos longos entre compras |
+| **Inativo** | Último pedido há mais de 6 meses |
+| **Novo** | Cadastro recente, poucos pedidos |
 
 ### Decisões de dados
 
@@ -313,13 +312,13 @@ CREATE INDEX idx_pedidos_data_pedido ON pedidos(data_pedido);
 CREATE INDEX idx_itens_pedido_id_pedido ON itens_pedido(id_pedido);
 ```
 
-| Índice                       | Coluna                    | Benefício                                              |
-| ---------------------------- | ------------------------- | ------------------------------------------------------ |
-| `idx_pedidos_id_cliente`     | `pedidos(id_cliente)`     | Acelera JOINs nas queries de RFM e clientes inativos   |
-| `idx_pedidos_data_pedido`    | `pedidos(data_pedido)`    | Otimiza filtros por período (tendências, top produtos) |
-| `idx_itens_pedido_id_pedido` | `itens_pedido(id_pedido)` | Acelera JOINs para cálculo de receita e anomalias      |
+| Índice | Coluna | Benefício |
+|---|---|---|
+| `idx_pedidos_id_cliente` | `pedidos(id_cliente)` | Acelera JOINs nas queries de RFM e clientes inativos |
+| `idx_pedidos_data_pedido` | `pedidos(data_pedido)` | Otimiza filtros por período (tendências, top produtos) |
+| `idx_itens_pedido_id_pedido` | `itens_pedido(id_pedido)` | Acelera JOINs para cálculo de receita e anomalias |
 
-> **Justificativa:** Sem índices, o PostgreSQL executa _sequential scans_ nas tabelas a cada query. Com índices nas colunas usadas em `JOIN`, `WHERE` e `GROUP BY`, o planner utiliza _index scans_, reduzindo significativamente o custo de I/O em tabelas com volume crescente.
+> **Justificativa:** Sem índices, o PostgreSQL executa *sequential scans* nas tabelas a cada query. Com índices nas colunas usadas em `JOIN`, `WHERE` e `GROUP BY`, o planner utiliza *index scans*, reduzindo significativamente o custo de I/O em tabelas com volume crescente.
 
 ---
 
@@ -352,10 +351,10 @@ A aplicação foi desenvolvida em Streamlit com identidade visual baseada nas co
 
 Utilizando Pandas para manipulação e Matplotlib para visualizações estatísticas:
 
-| Gráfico          | Objetivo                                                                      |
-| ---------------- | ----------------------------------------------------------------------------- |
-| **Histograma**   | Distribuição de vendas por faixa de valor — identifica o ticket predominante  |
-| **Boxplot**      | Dispersão e outliers de preços por categoria de produto                       |
+| Gráfico | Objetivo |
+|---|---|
+| **Histograma** | Distribuição de vendas por faixa de valor — identifica o ticket predominante |
+| **Boxplot** | Dispersão e outliers de preços por categoria de produto |
 | **Scatter Plot** | Relação entre data do pedido e valor total — revela tendências e sazonalidade |
 
 📸 **Análise Exploratória — visão geral:**
@@ -378,69 +377,34 @@ Utilizando Pandas para manipulação e Matplotlib para visualizações estatíst
 
 - Python 3.9+
 - PostgreSQL instalado e em execução
-- pip
+- pip (gerenciador de pacotes Python)
 
 ### Passo a passo
 
 **1. Clonar o repositório**
-
 ```bash
 git clone https://github.com/FelipeDevFS/analise-dados-agromercantil.git
 cd analise-dados-agromercantil
 ```
 
 **2. Instalar as dependências**
-
 ```bash
 pip install -r requirements.txt
 ```
 
-**3. Configurar o banco de dados**
+**3. Executar os scripts SQL**
 
-Execute os scripts SQL na seguinte ordem no PostgreSQL:
-
+Execute na seguinte ordem no PostgreSQL:
 ```bash
 psql -U seu_usuario -d seu_banco -f sql/create_tables.sql
 psql -U seu_usuario -d seu_banco -f sql/inserts.sql
 psql -U seu_usuario -d seu_banco -f sql/indexes.sql
 ```
 
-**4. Configurar a conexão**
-
-Edite as credenciais de conexão em `python/database.py`:
-
-```python
-DB_CONFIG = {
-    "host": "localhost",
-    "database": "seu_banco",
-    "user": "seu_usuario",
-    "password": "sua_senha"
-}
-```
-
-**5. Executar o dashboard**
-
+**4. Executar o dashboard**
 ```bash
 streamlit run python/app.py
 ```
-
----
-
-## 🧪 Testes Unitários
-
-Testes implementados para validar as principais funções de negócio:
-
-```bash
-# Executar todos os testes
-python -m pytest tests/ -v
-```
-
-Os testes cobrem:
-
-- Validação da lógica de detecção de anomalias (divergência entre `valor_total` e soma dos itens)
-- Validação do cálculo de dias desde o último pedido (RFM)
-- Verificação de clientes inativos (threshold de 6 meses)
-- Integridade dos dados mockados (chaves estrangeiras, valores não nulos)
 
 ---
 
@@ -448,18 +412,18 @@ Os testes cobrem:
 
 Todos os prints das consultas SQL e da aplicação Streamlit estão disponíveis na pasta `/docs`:
 
-| Arquivo                                  | Conteúdo                                |
-| ---------------------------------------- | --------------------------------------- |
-| `queryRFM.png`                           | Resultado da análise RFM no PostgreSQL  |
-| `queryTopProdutos.png`                   | Top 5 produtos mais rentáveis           |
-| `queryTendencias.png`                    | Tendência de vendas mensais             |
-| `queryClientesInativos.png`              | Clientes sem pedido nos últimos 6 meses |
-| `queryAnomalias.png`                     | Pedidos com valor divergente            |
-| `dashboardCompleto.png`                  | Dashboard Streamlit — visão geral       |
-| `dashboardFiltroSemDados.png`            | Dashboard com filtro de período ativo   |
-| `analiseExploratoriaPandas.png`          | Análise exploratória completa           |
-| `graficosPandasBoxPlot.png`              | Boxplot por categoria de produto        |
-| `graficosPandasDistribuicaoTemporal.png` | Scatter plot temporal                   |
+| Arquivo | Conteúdo |
+|---|---|
+| `queryRFM.png` | Resultado da análise RFM no PostgreSQL |
+| `queryTopProdutos.png` | Top 5 produtos mais rentáveis |
+| `queryTendencias.png` | Tendência de vendas mensais |
+| `queryClientesInativos.png` | Clientes sem pedido nos últimos 6 meses |
+| `queryAnomalias.png` | Pedidos com valor divergente |
+| `dashboardCompleto.png` | Dashboard Streamlit — visão geral |
+| `dashboardFiltroSemDados.png` | Dashboard com filtro de período ativo |
+| `analiseExploratoriaPandas.png` | Análise exploratória completa |
+| `graficosPandasBoxPlot.png` | Boxplot por categoria de produto |
+| `graficosPandasDistribuicaoTemporal.png` | Scatter plot temporal |
 
 ---
 
@@ -480,4 +444,4 @@ A solução entrega uma visão clara e prática para **tomada de decisão basead
 
 ---
 
-_Desenvolvido por **Felipe Oliveira Carvalho** · [LinkedIn](https://www.linkedin.com/in/felipe-oliveira-carvalhodev/) · [GitHub](https://github.com/FelipeDevFS/analise-dados-agromercantil.git)_
+*Desenvolvido por **Felipe Oliveira Carvalho** · [LinkedIn](https://www.linkedin.com/in/felipe-oliveira-carvalhodev/) · [GitHub](https://github.com/FelipeDevFS/analise-dados-agromercantil.git)*
