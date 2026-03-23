@@ -1,40 +1,64 @@
-# 📊 Estratégia de Mock de Dados
+# 📊 Dashboard de Análise de Dados - Agromercantil
 
-Os dados foram estruturados para simular diferentes perfis de clientes:
+## 📊 Objetivo
 
-- Cliente recorrente com alto volume de compras
-- Cliente ocasional com compras moderadas
-- Cliente inativo sem compras recentes
-- Cliente novo com poucas compras
+Este projeto tem como objetivo desenvolver uma solução completa de
+análise de dados utilizando **PostgreSQL** e **Python (Streamlit)**,
+contemplando desde a modelagem e manipulação dos dados até a
+visualização interativa dos resultados.
 
-Além disso:
-
-- Foram criadas variações de produtos por categoria e faixa de preço
-- Os pedidos foram distribuídos ao longo de diferentes meses para
-  permitir análise temporal
-- Foi incluída uma inconsistência proposital entre o valor total do
-  pedido e a soma dos itens, com o objetivo de possibilitar a detecção
-  de anomalias
+A aplicação permite analisar o comportamento de clientes, desempenho de
+produtos e identificar inconsistências nos dados de vendas.
 
 ---
 
-# 🧠 Alteração do Modelo de Dados
+## 🧱 Estrutura do Projeto
 
-Atualmente, o modelo de dados permite que cada pedido esteja associado a
-apenas um cliente, por meio da chave estrangeira `id_cliente` na tabela
-`pedidos`.
+    sql/        → Scripts SQL com todas as consultas analíticas
+    python/     → Aplicação Streamlit
+      ├── database.py → Conexão com banco e queries
+      └── app.py      → Dashboard principal
+    docs/       → Prints da aplicação e consultas
 
-Para permitir que um pedido tenha múltiplos clientes (como em cenários
-de compras compartilhadas), é necessário transformar esse relacionamento
-em N:N (muitos para muitos).
+---
 
-Para isso, propõe-se a criação de uma tabela intermediária chamada
-`clientes_pedidos`, responsável por associar clientes e pedidos.
+## 🗄️ Banco de Dados
 
-Além disso, a coluna `id_cliente` seria removida da tabela `pedidos`,
-eliminando a dependência direta entre as entidades e garantindo maior
-flexibilidade no modelo.
+- clientes
+- produtos
+- pedidos
+- itens_pedido
 
-Essa abordagem evita redundância e garante que o relacionamento entre
-clientes e pedidos seja controlado de forma adequada pela tabela
-intermediária.
+---
+
+## 🎯 Estratégia de Mock de Dados
+
+- Clientes recorrentes com alto volume de compras\
+- Clientes ocasionais\
+- Clientes inativos\
+- Clientes novos
+
+📅 Dados entre **2024 e 2025**
+
+---
+
+## 📈 Análises SQL
+
+- RFM\
+- Top 5 produtos\
+- Tendência mensal\
+- Clientes inativos\
+- Anomalias
+
+---
+
+## ▶️ Como Executar
+
+    pip install -r requirements.txt
+    streamlit run python/app.py
+
+---
+
+## ✅ Conclusão
+
+Projeto completo de análise de dados com SQL + Python + Streamlit.
